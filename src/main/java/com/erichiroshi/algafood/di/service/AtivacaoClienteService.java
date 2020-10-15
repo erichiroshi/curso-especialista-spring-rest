@@ -1,11 +1,8 @@
 package com.erichiroshi.algafood.di.service;
 
-import org.springframework.stereotype.Component;
-
 import com.erichiroshi.algafood.di.modelo.Cliente;
 import com.erichiroshi.algafood.di.notificacao.Notificador;
 
-@Component
 public class AtivacaoClienteService {
 
 	private Notificador notificador;
