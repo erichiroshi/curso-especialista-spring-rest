@@ -10,7 +10,7 @@ public class NotificadorSMS implements Notificador {
 
 	@Override
 	public void notificar(Cliente cliente, String msg) {
-		System.out.printf("Notificando %s por SMS pelo telefone %s, msg: %s%n",
+		System.out.printf("Notificando %s por SMS pelo telefone %s: %s%n",
 				cliente.getNome(), cliente.getTelefone(), msg);
 	}
 
