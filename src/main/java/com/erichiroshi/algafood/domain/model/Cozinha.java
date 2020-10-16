@@ -3,8 +3,10 @@ package com.erichiroshi.algafood.domain.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "tab_cozinha")
 public class Cozinha {
 
 	@Id
