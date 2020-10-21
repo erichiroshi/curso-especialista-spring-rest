@@ -3,8 +3,6 @@ package com.erichiroshi.algafood.api.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,24 +25,20 @@ public class CozinhaController {
 	public List<Cozinha> listar() {
 		return cozinhaRepository.listar();
 	}
-	
+
 	@GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
 	public CozinhasXmlWrapper listarXml() {
 		return new CozinhasXmlWrapper(cozinhaRepository.listar());
 	}
-	
+
 	@GetMapping("/{cozinhaId}")
 	public ResponseEntity<Cozinha> findById(@PathVariable Long cozinhaId) {
+		Cozinha cozinha = cozinhaRepository.buscar(cozinhaId);
 		
-		//return ResponseEntity.status(HttpStatus.OK).body(cozinhaRepository.buscar(cozinhaId));
-		//return ResponseEntity.ok(cozinhaRepository.buscar(cozinhaId));
+		if (cozinha != null)
+			return ResponseEntity.ok(cozinha);
 		
-		HttpHeaders headers = new HttpHeaders();
-		headers.add(HttpHeaders.LOCATION, "http://localhost:8080/cozinhas");
-		
-		return ResponseEntity
-				.status(HttpStatus.FOUND)
-				.headers(headers)
-				.build();
+		// return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		return ResponseEntity.notFound().build();
 	}
 }
