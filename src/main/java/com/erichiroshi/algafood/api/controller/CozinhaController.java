@@ -38,13 +38,13 @@ public class CozinhaController {
 	}
 
 	@GetMapping("/{cozinhaId}")
-	public ResponseEntity<Cozinha> findById(@PathVariable Long cozinhaId) {
+	public ResponseEntity<Cozinha> buscar(@PathVariable Long cozinhaId) {
 		Cozinha cozinha = cozinhaRepository.buscar(cozinhaId);
 
-		if (cozinha != null)
+		if (cozinha != null) {
 			return ResponseEntity.ok(cozinha);
-
-		// return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		
 		return ResponseEntity.notFound().build();
 	}
 
@@ -69,16 +69,16 @@ public class CozinhaController {
 	}
 
 	@DeleteMapping("/{cozinhaId}")
-	public ResponseEntity<Cozinha> remover(@PathVariable Long cozinhaId) {
+	public ResponseEntity<?> remover(@PathVariable Long cozinhaId) {
 		try {
 			cadastroCozinha.excluir(cozinhaId);
 			return ResponseEntity.noContent().build();
 
 		} catch (EntidadeEmUsoException e) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
 
 		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.noContent().build();
+			return ResponseEntity.notFound().build();
 		}
 	}
 
