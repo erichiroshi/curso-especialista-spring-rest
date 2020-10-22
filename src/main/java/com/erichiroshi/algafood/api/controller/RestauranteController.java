@@ -3,6 +3,7 @@ package com.erichiroshi.algafood.api.controller;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,15 +37,15 @@ public class RestauranteController {
 
 	@GetMapping
 	public List<Restaurante> listar() {
-		return restauranteRepository.listar();
+		return restauranteRepository.findAll();
 	}
 
 	@GetMapping("/{restaurantesId}")
 	public ResponseEntity<Restaurante> findById(@PathVariable Long restaurantesId) {
-		Restaurante restaurante = restauranteRepository.buscar(restaurantesId);
+		Optional<Restaurante> restaurante = restauranteRepository.findById(restaurantesId);
 
-		if (restaurante != null) {
-			return ResponseEntity.ok(restaurante);
+		if (restaurante.isPresent()) {
+			return ResponseEntity.ok(restaurante.get());
 		}
 
 		return ResponseEntity.notFound().build();
@@ -64,7 +65,7 @@ public class RestauranteController {
 	@PutMapping("/{id}")
 	public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Restaurante restaurante) {
 		try {
-			Restaurante restauranteAtual = restauranteRepository.buscar(id);
+			Restaurante restauranteAtual = restauranteRepository.findById(id).orElse(null);
 
 			if (restauranteAtual != null) {
 				BeanUtils.copyProperties(restaurante, restauranteAtual, "id");
@@ -82,7 +83,7 @@ public class RestauranteController {
 
 	@PatchMapping("/{id}")
 	public ResponseEntity<?> atualizarParcial(@PathVariable Long id, @RequestBody Map<String, Object> campos) {
-		Restaurante restauranteAtual = restauranteRepository.buscar(id);
+		Restaurante restauranteAtual = restauranteRepository.findById(id).orElse(null);
 
 		if (restauranteAtual == null) {
 			return ResponseEntity.notFound().build();
