@@ -1,6 +1,7 @@
 package com.erichiroshi.algafood.api.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,9 +19,13 @@ public class TesteController {
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
 	
-//	@GetMapping(value = "/cozinhas/por-nome")
-//	public List<Cozinha> cozinhasPorNome(@RequestParam(value = "nome") String nome){
-//		return cozinhaRepository.consultarPorNome(nome);
-//		
-//	}
+	@GetMapping(value = "/cozinhas/por-nome")
+	public List<Cozinha> cozinhasPorNome(@RequestParam(value = "nome") String nome){
+		return cozinhaRepository.findTodasByNome(nome);
+	}
+	
+	@GetMapping(value = "/cozinhas/unica-por-nome")
+	public Optional<Cozinha> findByNome(@RequestParam(value = "nome") String nome){
+		return cozinhaRepository.findByNome(nome);
+	}
 }
