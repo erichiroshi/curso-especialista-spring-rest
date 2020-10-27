@@ -14,6 +14,8 @@ import com.erichiroshi.algafood.domain.model.Cozinha;
 import com.erichiroshi.algafood.domain.model.Restaurante;
 import com.erichiroshi.algafood.domain.repository.CozinhaRepository;
 import com.erichiroshi.algafood.domain.repository.RestauranteRepository;
+import com.erichiroshi.algafood.infrastructure.repository.spec.RestauranteComFreteGratisSpec;
+import com.erichiroshi.algafood.infrastructure.repository.spec.RestauranteComNomeSemelhanteSpec;
 
 @RestController
 @RequestMapping("/teste")
@@ -70,6 +72,14 @@ public class TesteController {
 	@GetMapping(value = "/restaurantes/count-por-cozinhaId")
 	public int restaurantesCountPorCozinhaId(Long cozinhaId){
 		return restauranteRepository.countByCozinhaId(cozinhaId);
+	}
+	
+	@GetMapping("/restaurantes/com-frete-gratis")
+	public List<Restaurante> restaurantesComFreteGratis(String nome){
+		var comFreteGratis = new RestauranteComFreteGratisSpec();
+		var comNomeSemelhante = new RestauranteComNomeSemelhanteSpec(nome);
+		
+		return restauranteRepository.findAll(comFreteGratis.and(comNomeSemelhante));
 	}
 
 }
