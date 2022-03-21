@@ -30,4 +30,10 @@ public class CadastroCozinha {
 		return entityManager.merge(cozinha);
 	}
 	
+	@Transactional
+	public void remover(Cozinha cozinha) {
+		cozinha = buscar(cozinha.getId());
+		entityManager.remove(cozinha);
+	}
+	
 }
