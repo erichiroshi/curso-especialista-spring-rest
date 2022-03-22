@@ -1,10 +1,8 @@
 package com.erichiroshi.algafood.api.controller;
 
 import java.net.URI;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,6 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.erichiroshi.algafood.api.model.CozinhasXmlWrapper;
 import com.erichiroshi.algafood.domain.model.Cozinha;
 import com.erichiroshi.algafood.domain.repository.CozinhaRepository;
+import com.erichiroshi.algafood.domain.service.CadastroCozinhaService;
 
 @RestController
 @RequestMapping("/cozinhas")
@@ -31,6 +30,9 @@ public class CozinhaController {
 
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
+	
+	@Autowired
+	private CadastroCozinhaService cadastroCozinha;
 
 	@GetMapping
 	public List<Cozinha> listar() {
@@ -53,7 +55,7 @@ public class CozinhaController {
 
 	@PostMapping
 	public ResponseEntity<Cozinha> adicionar(@RequestBody Cozinha cozinha) {
-		cozinha = cozinhaRepository.salvar(cozinha);
+		cozinha = cadastroCozinha.salvar(cozinha);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(cozinha.getId()).toUri();
 		return ResponseEntity.created(uri).body(cozinha);
 	}
