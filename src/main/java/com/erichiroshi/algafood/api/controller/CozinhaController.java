@@ -1,12 +1,17 @@
 package com.erichiroshi.algafood.api.controller;
 
 import java.net.URI;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,8 +54,6 @@ public class CozinhaController {
 	@PostMapping
 	public ResponseEntity<Cozinha> adicionar(@RequestBody Cozinha cozinha) {
 		cozinha = cozinhaRepository.salvar(cozinha);
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.add(HttpHeaders.LOCATION, "http://localhost:8080/cozinhas/" + cozinha.getId());
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(cozinha.getId()).toUri();
 		return ResponseEntity.created(uri).body(cozinha);
 	}
@@ -58,13 +61,26 @@ public class CozinhaController {
 	@PutMapping("/{cozinhaId}")
 	public ResponseEntity<Cozinha> atualizar(@PathVariable Long cozinhaId, @RequestBody Cozinha cozinha) {
 		Cozinha cozinhaAtual = cozinhaRepository.buscar(cozinhaId);
-//		cozinhaAtual.setNome(cozinha.getNome());
 		if (cozinhaAtual != null) {
 			BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
 			cozinhaAtual = cozinhaRepository.salvar(cozinhaAtual);
 			return ResponseEntity.ok(cozinhaAtual);
 		}
 		return ResponseEntity.notFound().build();
+	}
+
+	@DeleteMapping("/{cozinhaId}")
+	public ResponseEntity<Void> deletar(@PathVariable Long cozinhaId) {
+		try {
+			Cozinha cozinha = cozinhaRepository.buscar(cozinhaId);
+			if (cozinha != null) {
+				cozinhaRepository.remover(cozinha);
+				return ResponseEntity.noContent().build();
+			}
+			return ResponseEntity.notFound().build();
+		}catch (DataIntegrityViolationException e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
 	}
 
 }
