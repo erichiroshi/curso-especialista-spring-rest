@@ -1,5 +1,7 @@
 package com.erichiroshi.algafood.api.controller;
 
+import static com.erichiroshi.algafood.infrastructure.repository.spec.RestauranteSpecs.*;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -14,8 +16,6 @@ import com.erichiroshi.algafood.domain.model.Cozinha;
 import com.erichiroshi.algafood.domain.model.Restaurante;
 import com.erichiroshi.algafood.domain.repository.CozinhaRepository;
 import com.erichiroshi.algafood.domain.repository.RestauranteRepository;
-import com.erichiroshi.algafood.infrastructure.repository.spec.RestauranteComFreteGratisSpec;
-import com.erichiroshi.algafood.infrastructure.repository.spec.RestauranteComNomeSemelhanteSpec;
 
 @RestController
 @RequestMapping("/teste")
@@ -36,12 +36,12 @@ public class TesteController {
 	public Optional<Cozinha> cozinhaPorNome(String nome) {
 		return cozinhaRepository.findByNome(nome);
 	}
-	
+
 	@GetMapping("/cozinhas/existe-por-nome")
 	public boolean cozinhaExistePorNome(String nome) {
 		return cozinhaRepository.existsByNome(nome);
 	}
-	
+
 	@GetMapping("/cozinhas/count-por-nome")
 	public int cozinhaCountPorNome(String nome) {
 		return cozinhaRepository.countByNome(nome);
@@ -61,28 +61,26 @@ public class TesteController {
 	public Optional<Restaurante> restaurantePrimeiroPorNome(String nome) {
 		return restauranteRepository.findFirstRestauranteByNomeContaining(nome);
 	}
-	
+
 	@GetMapping("/restaurantes/por-nome-top2")
 	public List<Restaurante> restaurantesPorNomeTop2(String nome) {
 		return restauranteRepository.findTop2ByNomeContaining(nome);
 	}
-	
+
 	@GetMapping("/restaurantes/por-nome-e-frete")
-	public List<Restaurante> restaurantesPorNomeFrete(String nome, 
-			BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal) {
+	public List<Restaurante> restaurantesPorNomeFrete(String nome, BigDecimal taxaFreteInicial,
+			BigDecimal taxaFreteFinal) {
 		return restauranteRepository.find(nome, taxaFreteInicial, taxaFreteFinal);
 	}
-	
+
 	@GetMapping("/restaurantes/count-por-cozinhaId")
 	public int restauranteCountCozinhaId(Long cozinhaId) {
 		return restauranteRepository.countByCozinhaId(cozinhaId);
 	}
-	
+
 	@GetMapping("/restaurantes/com-frete-gratis")
 	public List<Restaurante> restaurantesComFreteGratis(String nome) {
-		var comFreteGratis = new RestauranteComFreteGratisSpec();
-		var comNomeSemelhante = new RestauranteComNomeSemelhanteSpec(nome);
-		
-		return restauranteRepository.findAll(comNomeSemelhante.and(comFreteGratis));
+
+		return restauranteRepository.findAll(comFreteGratis().and(comNomeSemelhante(nome)));
 	}
 }
