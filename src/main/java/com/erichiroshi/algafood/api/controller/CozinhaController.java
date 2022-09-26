@@ -15,11 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.erichiroshi.algafood.domain.exception.EntidadeEmUsoException;
-import com.erichiroshi.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.erichiroshi.algafood.domain.model.Cozinha;
 import com.erichiroshi.algafood.domain.repository.CozinhaRepository;
 import com.erichiroshi.algafood.domain.service.CadastroCozinhaService;
@@ -66,18 +65,24 @@ public class CozinhaController {
 		return ResponseEntity.notFound().build();
 	}
 
+//	@DeleteMapping("/{cozinhaId}")
+//	public ResponseEntity<Void> deletar(@PathVariable Long cozinhaId) {
+//		try {
+//			cadastroCozinha.excluir(cozinhaId);
+//			return ResponseEntity.noContent().build();
+//
+//		} catch (EntidadeNaoEncontradaException e) {
+//			return ResponseEntity.notFound().build();
+//
+//		} catch (EntidadeEmUsoException e) {
+//			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+//		}
+//	}
+
 	@DeleteMapping("/{cozinhaId}")
-	public ResponseEntity<Void> deletar(@PathVariable Long cozinhaId) {
-		try {
-			cadastroCozinha.excluir(cozinhaId);
-			return ResponseEntity.noContent().build();
-
-		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.notFound().build();
-
-		} catch (EntidadeEmUsoException e) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).build();
-		}
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void deletar(@PathVariable Long cozinhaId) {
+		cadastroCozinha.excluir(cozinhaId);
 	}
 
 }
