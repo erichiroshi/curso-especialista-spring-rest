@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.erichiroshi.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.erichiroshi.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.erichiroshi.algafood.domain.exception.NegocioException;
 import com.erichiroshi.algafood.domain.model.Cidade;
 import com.erichiroshi.algafood.domain.repository.CidadeRepository;
@@ -57,7 +58,7 @@ public class CidadeController {
 		Cidade cidadeAtual = cadastroCidade.buscarOuFalhar(cidadeId);
 		BeanUtils.copyProperties(cidade, cidadeAtual, "id");
 			return cadastroCidade.salvar(cidadeAtual);
-		} catch (EntidadeNaoEncontradaException e) {
+		} catch (EstadoNaoEncontradoException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
 	}
