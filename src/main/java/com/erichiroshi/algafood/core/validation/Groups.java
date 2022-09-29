@@ -1,4 +1,4 @@
-package com.erichiroshi.algafood;
+package com.erichiroshi.algafood.core.validation;
 
 public interface Groups {
 
