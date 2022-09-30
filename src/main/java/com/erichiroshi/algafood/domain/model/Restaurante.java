@@ -27,7 +27,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.erichiroshi.algafood.core.validation.Groups;
-import com.erichiroshi.algafood.core.validation.Multiplo;
 import com.erichiroshi.algafood.core.validation.ValorZeroIncluiDescricao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -51,7 +50,6 @@ public class Restaurante {
 
 	@NotNull
 	@PositiveOrZero
-	@Multiplo(numero = 5)
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
 
