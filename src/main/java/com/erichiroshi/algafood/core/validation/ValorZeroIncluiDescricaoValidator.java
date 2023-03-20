@@ -21,6 +21,7 @@ public class ValorZeroIncluiDescricaoValidator implements ConstraintValidator<Va
 		this.descricaoObrigatoria = constraint.descricaoObrigatoria();
 	}
 	
+	@SuppressWarnings("null")
 	@Override
 	public boolean isValid(Object objetoValidacao, ConstraintValidatorContext context) {
 		boolean valido = true;

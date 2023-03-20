@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -23,7 +24,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.erichiroshi.algafood.core.validation.ValidacaoException;
 import com.erichiroshi.algafood.domain.exception.EntidadeEmUsoException;
 import com.erichiroshi.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.erichiroshi.algafood.domain.exception.NegocioException;
@@ -35,25 +35,28 @@ import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 
 	private static final String MSG_ERRO_GENERICA_USUARIO_FINAL = "Ocorreu um erro interno inesperado no sistema. Tente novamente e"
-	+ " se o problema persistir, entre em contato com o administrador do sistema.";
+					+ " se o problema persistir, entre em contato com o administrador do sistema.";
 	
 	@Autowired
 	private MessageSource messageSource;
 	
-	@ExceptionHandler({ ValidacaoException.class })
-	public ResponseEntity<Object> handleValidacaoException(ValidacaoException ex, WebRequest request) {
-		return handleValidationInternal(ex, ex.getBindingResult(), new HttpHeaders(), 
-				HttpStatus.BAD_REQUEST, request);
+	@Override
+	protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+		
+		return handleValidationInternal(ex, ex.getBindingResult(), headers, status, request);
 	}
 	
+//	@ExceptionHandler({ ValidacaoException.class })
+//	public ResponseEntity<Object> handleValidacaoException(ValidacaoException ex, WebRequest request) {
+//		return handleValidationInternal(ex, ex.getBindingResult(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+//	}
+	
 	@Override
-	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-			HttpHeaders headers, HttpStatus status, WebRequest request) {
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 	    return handleValidationInternal(ex, ex.getBindingResult(), headers, status, request);
 	}
 
-	private ResponseEntity<Object> handleValidationInternal(Exception ex, BindingResult bindingResult, HttpHeaders headers,
-			HttpStatus status, WebRequest request) {
+	private ResponseEntity<Object> handleValidationInternal(Exception ex, BindingResult bindingResult, HttpHeaders headers, HttpStatus status, WebRequest request) {
 		ProblemType problemType = ProblemType.DADOS_INVALIDOS;
 	    String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
 	    
@@ -122,6 +125,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		return super.handleTypeMismatch(ex, headers, status, request);
 	}
 
+	@SuppressWarnings("null")
 	private ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
 		ProblemType problemType = ProblemType.PARAMETRO_INVALIDO;
@@ -228,6 +232,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 	}
 
+	@SuppressWarnings("null")
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
 		
